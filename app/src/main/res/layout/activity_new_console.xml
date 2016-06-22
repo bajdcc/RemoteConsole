@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.bajdcc.cmd.remoteconsole.NewConsoleActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editMsg"
+        android:hint="@string/new_console_input"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_console_send_msg"
+        android:id="@+id/btnMsg"
+        android:layout_below="@+id/editMsg"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@color/listDivider"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_below="@+id/btnMsg"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/divider" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editUser"
+        android:hint="@string/new_console_input_user"
+        android:layout_below="@+id/divider"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/divider"
+        android:layout_alignEnd="@+id/divider" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editMessage"
+        android:hint="@string/new_console_input_message"
+        android:layout_below="@+id/editUser"
+        android:layout_alignRight="@+id/editUser"
+        android:layout_alignEnd="@+id/editUser"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_console_send_popup"
+        android:id="@+id/btnSendPopup"
+        android:layout_below="@+id/editMessage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_console_warn"
+        android:id="@+id/checkWarn"
+        android:layout_alignTop="@+id/btnSendPopup"
+        android:layout_alignRight="@+id/editMessage"
+        android:layout_alignEnd="@+id/editMessage" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_console_lock"
+        android:id="@+id/btnLock"
+        android:layout_alignBottom="@+id/btnMsg"
+        android:layout_toRightOf="@+id/btnMsg"
+        android:layout_toEndOf="@+id/btnMsg" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_console_close_popup"
+        android:id="@+id/btnClosePopup"
+        android:layout_alignTop="@+id/btnTogglePopup"
+        android:layout_toRightOf="@+id/btnTogglePopup"
+        android:layout_toEndOf="@+id/btnTogglePopup" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_console_toggle_popup"
+        android:id="@+id/btnTogglePopup"
+        android:layout_alignTop="@+id/btnSendPopup"
+        android:layout_toRightOf="@+id/btnSendPopup"
+        android:layout_toEndOf="@+id/btnSendPopup" />
+
+</RelativeLayout>
