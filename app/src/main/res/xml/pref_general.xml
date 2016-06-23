@@ -33,4 +33,9 @@
         android:singleLine="true"
         android:title="@string/pref_title_general_port" />
 
+    <SwitchPreference
+        android:defaultValue="@string/pref_default_general_share_images"
+        android:key="general_image"
+        android:title="@string/pref_title_general_share_images" />
+
 </PreferenceScreen>

@@ -116,6 +116,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         .getString(preference.getKey(), ""));
     }
 
+    /**
+     * Boolean version for {@link #bindPreferenceSummaryToValue}
+     *
+     * @see #bindPreferenceSummaryToValue
+     */
+    private static void bindPreferenceSummaryToValueBooleanVersion(Preference preference) {
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+
+        // Trigger the listener immediately with the preference's
+        // current value.
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getBoolean(preference.getKey(), false));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,6 +196,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("general_username"));
             bindPreferenceSummaryToValue(findPreference("general_ip"));
             bindPreferenceSummaryToValue(findPreference("general_port"));
+            bindPreferenceSummaryToValueBooleanVersion(findPreference("general_image"));
         }
 
         @Override

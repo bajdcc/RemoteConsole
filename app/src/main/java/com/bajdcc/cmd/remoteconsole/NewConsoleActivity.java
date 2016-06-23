@@ -2,8 +2,11 @@ package com.bajdcc.cmd.remoteconsole;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -25,6 +28,67 @@ public class NewConsoleActivity extends AppCompatActivity {
     private EditText edtText = null;
     private CheckBox checkWarn = null;
 
+    final AsyncHttpResponseHandler defaultHandler = new AsyncHttpResponseHandler() {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+            Message msg = new Message();
+            msg.what = 3;
+            Bundle data = new Bundle();
+            data.putString("msg", "发送成功");
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+            String message = errorResponse != null ? new String(errorResponse) : e.getMessage();
+            Message msg = new Message();
+            msg.what = 3;
+            Bundle data = new Bundle();
+            data.putString("msg", message);
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            final Bundle data = msg.getData();
+            switch (msg.what) {
+                case 1:
+                    Log.d(NewConsoleActivity.this.getLocalClassName(), data.getString("url"));
+                    try {
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        client.setTimeout(1000);
+                        client.setMaxRetriesAndTimeout(1, 1000);
+                        client.get(data.getString("url"), defaultHandler);
+                    } catch (Exception e) {
+                        Log.e(NewConsoleActivity.this.getLocalClassName(), e.getMessage());
+                    }
+                    break;
+                case 2:
+                    Log.d(NewConsoleActivity.this.getLocalClassName(), data.getString("url"));
+                    try {
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        client.setMaxRetriesAndTimeout(1, 1000);
+                        RequestParams params = new RequestParams();
+                        params.put("user", data.getString("user"));
+                        params.put("text", data.getString("text"));
+                        params.put("warn", data.getBoolean("warn"));
+                        client.get(data.getString("url"), params, defaultHandler);
+                    } catch (Exception e) {
+                        Log.e(NewConsoleActivity.this.getLocalClassName(), e.getMessage());
+                    }
+                    break;
+                case 3:
+                    Toast.makeText(getApplicationContext(), data.getString("msg"), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,30 +104,16 @@ public class NewConsoleActivity extends AppCompatActivity {
         edtText = (EditText) findViewById(R.id.editMessage);
         checkWarn = (CheckBox) findViewById(R.id.checkWarn);
 
-        final AsyncHttpResponseHandler defaultHandler = new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                Toast.makeText(getApplicationContext(), "发送成功", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                if (errorResponse != null) {
-                    Toast.makeText(getApplicationContext(), new String(errorResponse), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-
         findViewById(R.id.btnMsg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setMaxRetriesAndTimeout(1, 1000);
-                    client.get(prefix.concat("alert.exe/").concat(URLEncoder.encode(edtMsg.getText().toString(), "UTF-8")), defaultHandler);
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle data = new Bundle();
+                    data.putString("url", prefix.concat("alert.exe/").concat(URLEncoder.encode(edtMsg.getText().toString(), "UTF-8")));
+                    msg.setData(data);
+                    handler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -74,9 +124,12 @@ public class NewConsoleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setMaxRetriesAndTimeout(1, 1000);
-                    client.get(prefix.concat("lock.exe"), defaultHandler);
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle data = new Bundle();
+                    data.putString("url", prefix.concat("lock.exe"));
+                    msg.setData(data);
+                    handler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -87,13 +140,15 @@ public class NewConsoleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setMaxRetriesAndTimeout(1, 1000);
-                    RequestParams params = new RequestParams();
-                    params.put("user", edtUser.getText().toString());
-                    params.put("text", edtText.getText().toString());
-                    params.put("warn", checkWarn.isChecked());
-                    client.get(prefix.concat("danmuku.exe"), params, defaultHandler);
+                    Message msg = new Message();
+                    msg.what = 2;
+                    Bundle data = new Bundle();
+                    data.putString("url", prefix.concat("danmuku.exe"));
+                    data.putString("user", edtUser.getText().toString());
+                    data.putString("text", edtText.getText().toString());
+                    data.putBoolean("warn", checkWarn.isChecked());
+                    msg.setData(data);
+                    handler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -104,9 +159,12 @@ public class NewConsoleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setMaxRetriesAndTimeout(1, 1000);
-                    client.get(prefix.concat("danmuku.full"), defaultHandler);
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle data = new Bundle();
+                    data.putString("url", prefix.concat("danmuku.full"));
+                    msg.setData(data);
+                    handler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -117,9 +175,12 @@ public class NewConsoleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setMaxRetriesAndTimeout(1, 1000);
-                    client.get(prefix.concat("danmuku.shutdown"), defaultHandler);
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle data = new Bundle();
+                    data.putString("url", prefix.concat("danmuku.shutdown"));
+                    msg.setData(data);
+                    handler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

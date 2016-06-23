@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -226,6 +227,7 @@ public class OldConsoleActivity extends AppCompatActivity {
         final String strHost = editHost.getText().toString();
         final int port = Integer.parseInt(editPort.getText().toString());
         final String txtSend = strSend;
+        Log.d(this.getLocalClassName(), txtSend);
 
         new Thread(new Runnable() {
             @Override
@@ -257,7 +259,7 @@ public class OldConsoleActivity extends AppCompatActivity {
                     data.putString("err", "连接错误！");
                     msg.setData(data);
                     handler.sendMessage(msg);
-                    e.printStackTrace();
+                    Log.e(OldConsoleActivity.this.getLocalClassName(), e.getMessage());
                 } catch (IOException e) {
                     Message msg = new Message();
                     msg.what = 2;
@@ -267,7 +269,7 @@ public class OldConsoleActivity extends AppCompatActivity {
                     data.putString("err", "I/O 错误！");
                     msg.setData(data);
                     handler.sendMessage(msg);
-                    e.printStackTrace();
+                    Log.e(OldConsoleActivity.this.getLocalClassName(), e.getMessage());
                 }
             }
         }).start();

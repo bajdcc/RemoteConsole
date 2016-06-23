@@ -2,6 +2,7 @@ package com.bajdcc.cmd.remoteconsole;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,13 +28,20 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Drawer result = null;
-    private TextView txtStatus = null;
+    private Drawer result;
+    private TextView txtStatus;
+    private String host;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Config
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String ip = sp.getString("general_ip", "192.168.1.100");
+        String port = sp.getString("general_port", "80");
+        host = String.format("%s:%s", ip, port);
 
         // Handle Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.menu_test:
                         testServer();
+                        break;
+                    case R.id.menu_update:
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(String.format("http://%s/cmd/latest.php", host))));
                         break;
                 }
 
@@ -96,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                                     intent = new Intent(MainActivity.this, SettingsActivity.class);
                                     break;
                                 case 1003:
-                                    Toast.makeText(getApplicationContext(), getString(R.string.about), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.about), Toast.LENGTH_LONG).show();
                                     break;
                                 case 2001:
                                     intent = new Intent(MainActivity.this, OldConsoleActivity.class);
@@ -121,11 +133,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void testServer() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String ip = sp.getString("general_ip", "192.168.1.100");
-        String port = sp.getString("general_port", "80");
-        String address = String.format("http://%s:%s/cmd/update.php", ip, port);
-        final String host = String.format("%s:%s", ip, port);
+        String address = String.format("http://%s/cmd/update.php", host);
 
         Log.d(this.getLocalClassName(), address);
         try {
@@ -158,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(MainActivity.this.getLocalClassName(), e.getMessage());
         }
     }
 

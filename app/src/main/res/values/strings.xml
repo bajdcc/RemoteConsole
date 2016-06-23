@@ -2,9 +2,10 @@
 
     <!-- Strings related to App -->
 
-    <string name="app_name">RemoteConsole</string>
+    <string name="app_name">远程监控</string>
     <string name="app_author">bajdcc</string>
     <string name="app_test">测试</string>
+    <string name="app_update">更新</string>
     <string name="app_exit">退出</string>
     <string name="main_title">远程监控</string>
     <string name="drawer_item_home">主页</string>
@@ -20,7 +21,7 @@
     <string name="drawer_item_console_new_desc">控制弹幕</string>
     <string name="title_activity_settings">设置</string>
 
-    <string name="about">2016 Made by bajdcc.\nhttp://github.com/RemoteConsole</string>
+    <string name="about">Remote Console v1.1\n2016 Made by bajdcc.\nhttp://github.com/RemoteConsole</string>
 
     <!-- Strings related to Status -->
     <string name="text_test_start">Testing("%s")...</string>
@@ -94,6 +95,9 @@
 
     <string name="pref_title_general_port">端口</string>
     <string name="pref_default_general_port">80</string>
+
+    <string name="pref_title_general_share_images">显示分享图片</string>
+    <string name="pref_default_general_share_images">false</string>
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">同步</string>
