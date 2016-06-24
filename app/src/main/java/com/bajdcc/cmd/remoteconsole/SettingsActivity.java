@@ -197,6 +197,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("general_ip"));
             bindPreferenceSummaryToValue(findPreference("general_port"));
             bindPreferenceSummaryToValueBooleanVersion(findPreference("general_image"));
+            bindPreferenceSummaryToValue(findPreference("general_mqtt"));
         }
 
         @Override

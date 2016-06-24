@@ -3,6 +3,7 @@
     package="com.bajdcc.cmd.remoteconsole">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -21,7 +22,6 @@
             android:label="@string/title_activity_settings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -58,6 +58,15 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-    </application>
 
+        <service
+            android:name=".service.PushService"
+            android:label="Bajdcc Notification Service"></service>
+        <activity android:name=".PushingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

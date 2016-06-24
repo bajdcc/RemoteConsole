@@ -19,9 +19,24 @@
     <string name="drawer_item_console_old_desc">控制锁屏</string>
     <string name="drawer_item_console_new">新版</string>
     <string name="drawer_item_console_new_desc">控制弹幕</string>
+    <string name="drawer_item_console_mqtt">推送</string>
+    <string name="drawer_item_console_mqtt_desc">接收消息</string>
     <string name="title_activity_settings">设置</string>
 
-    <string name="about">Remote Console v1.1\n2016 Made by bajdcc.\nhttp://github.com/RemoteConsole</string>
+    <string name="about">Remote Console v1.2\n2016 Made by bajdcc.\nhttp://github.com/RemoteConsole</string>
+
+    <!-- Strings related to Pushing -->
+    <string name="pushing_start">启动服务</string>
+    <string name="pushing_stop">停止服务</string>
+    <string name="pushing_message">这是一则消息。</string>
+
+    <string name="pushing_nav_prev">上一首</string>
+    <string name="pushing_nav_next">下一首</string>
+    <string name="pushing_prev">左滑</string>
+    <string name="pushing_next">右滑</string>
+    <string name="pushing_play">播放</string>
+    <string name="pushing_cycle">循环</string>
+    <string name="pushing_danmuku">弹幕</string>
 
     <!-- Strings related to Status -->
     <string name="text_test_start">Testing("%s")...</string>
@@ -98,6 +113,9 @@
 
     <string name="pref_title_general_share_images">显示分享图片</string>
     <string name="pref_default_general_share_images">false</string>
+
+    <string name="pref_title_general_mqtt">推送端口</string>
+    <string name="pref_default_general_mqtt">1883</string>
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">同步</string>

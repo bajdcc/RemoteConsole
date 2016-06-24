@@ -33,6 +33,7 @@ public class ShareActivity extends AppCompatActivity {
     private LinearLayout layout;
     private LinearLayout.LayoutParams layoutParams;
     private boolean needToShowImage;
+    private Intent indentOrigin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,24 +48,28 @@ public class ShareActivity extends AppCompatActivity {
         layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 10, 0, 10);
 
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
+        indentOrigin = getIntent();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String action = indentOrigin.getAction();
+        String type = indentOrigin.getType();
         Log.d(this.getLocalClassName(), action);
         Log.d(this.getLocalClassName(), type);
-
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.startsWith("text/")) {
-                handleSendText(intent);
+                handleSendText(indentOrigin);
             } else if (type.startsWith("image/")) {
-                handleSendImage(intent);
+                handleSendImage(indentOrigin);
             }
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
             if (type.startsWith("image/")) {
-                handleSendMultipleImages(intent);
+                handleSendMultipleImages(indentOrigin);
             }
         } else {
-            handleNone(intent);
+            handleNone(indentOrigin);
         }
     }
 

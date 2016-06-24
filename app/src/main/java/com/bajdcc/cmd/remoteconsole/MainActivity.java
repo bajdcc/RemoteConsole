@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withIdentifier(1003).withName(R.string.drawer_item_about).withDescription(R.string.drawer_item_about_desc).withIcon(FontAwesome.Icon.faw_user),
                         new SectionDrawerItem().withName(R.string.drawer_item_section_header),
                         new PrimaryDrawerItem().withIdentifier(2001).withName(R.string.drawer_item_console_old).withDescription(R.string.drawer_item_console_old_desc).withIcon(FontAwesome.Icon.faw_paper_plane),
-                        new PrimaryDrawerItem().withIdentifier(2002).withName(R.string.drawer_item_console_new).withDescription(R.string.drawer_item_console_new_desc).withIcon(FontAwesome.Icon.faw_paper_plane)
-                )
+                        new PrimaryDrawerItem().withIdentifier(2002).withName(R.string.drawer_item_console_new).withDescription(R.string.drawer_item_console_new_desc).withIcon(FontAwesome.Icon.faw_paper_plane),
+                        new PrimaryDrawerItem().withIdentifier(2003).withName(R.string.drawer_item_console_mqtt).withDescription(R.string.drawer_item_console_mqtt_desc).withIcon(FontAwesome.Icon.faw_paper_plane))
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                                 case 2002:
                                     intent = new Intent(MainActivity.this, NewConsoleActivity.class);
+                                    break;
+                                case 2003:
+                                    intent = new Intent(MainActivity.this, PushingActivity.class);
                                     break;
                             }
 
