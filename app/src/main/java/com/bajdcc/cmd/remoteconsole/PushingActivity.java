@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bajdcc.cmd.remoteconsole.entity.BroadcastMsg;
 import com.bajdcc.cmd.remoteconsole.service.PushService;
 
 public class PushingActivity extends AppCompatActivity {
@@ -25,7 +26,9 @@ public class PushingActivity extends AppCompatActivity {
     private TextView textView;
     private Button[] btnGroup;
     private BroadcastReceiver receiver;
-    public static final String DYNAMICACTION = "com.bajdcc.cmd.remotecontrol.pushing.dynamic";
+    private SharedPreferences sharedPref;
+    public static final String DYNAMIC_ACTION = "com.bajdcc.cmd.remotecontrol.pushing.dynamic";
+    public static final String PREF_MESSAGE = "com.bajdcc.cmd.remotecontrol.pushing.message";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +67,7 @@ public class PushingActivity extends AppCompatActivity {
                 stopButton.setEnabled(false);
             }
         });
-        Intent intent = getIntent();
-        String msg = intent.getStringExtra("msg");
-        if (msg != null) {
-            textView.setText(msg);
-        }
+        sharedPref = getSharedPreferences(this.getLocalClassName(), MODE_PRIVATE);
         final int[] btnList = new int[]{
                 R.id.btnNavPrev,
                 R.id.btnNavNext,
@@ -98,8 +97,8 @@ public class PushingActivity extends AppCompatActivity {
                 }
             });
         }
-        SharedPreferences mPrefs = getSharedPreferences(PushService.TAG, MODE_PRIVATE);
-        boolean started = mPrefs.getBoolean(PushService.PREF_STARTED, false);
+        sharedPref = getSharedPreferences(PushService.TAG, MODE_PRIVATE);
+        boolean started = sharedPref.getBoolean(PushService.PREF_STARTED, false);
         startButton.setEnabled(!started);
         stopButton.setEnabled(started);
         enableButtonGroup(started);
@@ -114,15 +113,19 @@ public class PushingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        String msg = sharedPref.getString(PREF_MESSAGE, null);
+        if (msg != null) {
+            textView.setText(msg);
+        }
         mDeviceID = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
         IntentFilter filter_dynamic = new IntentFilter();
-        filter_dynamic.addAction(DYNAMICACTION);
+        filter_dynamic.addAction(DYNAMIC_ACTION);
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(DYNAMICACTION)) {
-                    String msg = intent.getStringExtra("msg");
-                    textView.setText(msg);
+                if (intent.getAction().equals(DYNAMIC_ACTION)) {
+                    BroadcastMsg msg = intent.getParcelableExtra("msg");
+                    textView.setText(msg.getMsg());
                 }
             }
         };

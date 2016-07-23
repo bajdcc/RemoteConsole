@@ -19,7 +19,9 @@ import android.util.Log;
 
 import com.bajdcc.cmd.remoteconsole.PushingActivity;
 import com.bajdcc.cmd.remoteconsole.R;
+import com.bajdcc.cmd.remoteconsole.entity.BroadcastMsg;
 import com.bajdcc.cmd.remoteconsole.utils.Digest;
+import com.baoyz.pg.PG;
 import com.ibm.mqtt.IMqttClient;
 import com.ibm.mqtt.MqttClient;
 import com.ibm.mqtt.MqttException;
@@ -426,16 +428,24 @@ public class PushService extends Service {
 
     // Display the topbar notification
     private void showNotification(String text) {
+        String[] spText = text.split("\n", 2);
+        String notifyText, notifyTitle;
+        if (spText.length == 1) {
+            notifyText = text;
+            notifyTitle = NOTIF_TITLE;
+        } else {
+            notifyText = spText[1];
+            notifyTitle = spText[0];
+        }
         Notification n = new Builder(this)
                 .setContentIntent(PendingIntent.getActivity(this, 0,
                         new Intent(this, PushingActivity.class)
-                                .addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                                .putExtra("msg", text), 0))
+                                .addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT), 0))
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)
-                .setContentTitle(NOTIF_TITLE)
-                .setContentText(text)
+                .setContentTitle(notifyTitle)
+                .setContentText(notifyText)
                 .setTicker(NOTIF_TICKER)
                 .build();
 
@@ -544,8 +554,11 @@ public class PushService extends Service {
         }
 
         private void broadcastMessage(String msg) {
-            Intent broadcast = new Intent(PushingActivity.DYNAMICACTION);
-            broadcast.putExtra("msg", msg);
+            Intent broadcast = new Intent(PushingActivity.DYNAMIC_ACTION);
+            BroadcastMsg m = new BroadcastMsg();
+            m.setMsg(msg);
+            broadcast.putExtra("msg", PG.convertParcelable(m));
+            mPrefs.edit().putString(PushingActivity.PREF_MESSAGE, msg).apply();
             sendBroadcast(broadcast, null);
         }
 

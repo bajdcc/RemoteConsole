@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
@@ -28,10 +29,23 @@ dependencies {
         transitive = true
     }
     compile 'com.loopj.android:android-async-http:1.4.9'
-    // icon fonts used inside the sample
-    // https://github.com/mikepenz/Android-Iconics
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.mikepenz:google-material-typeface:2.2.0.1@aar'
     compile 'com.mikepenz:fontawesome-typeface:4.4.0.1@aar'
     compile 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup:javapoet:1.7.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.baoyz.pg:core:2.1.0'
+    apt 'com.google.dagger:dagger-compiler:2.1'
+    apt 'com.hannesdorfmann.fragmentargs:processor:3.0.2'
+    provided 'com.baoyz.pg:compiler:2.1.1'
+    compile 'com.jakewharton:butterknife:8.0.0'
+    apt 'com.jakewharton:butterknife-compiler:8.0.0'
 }

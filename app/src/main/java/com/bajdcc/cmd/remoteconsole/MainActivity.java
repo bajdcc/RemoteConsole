@@ -13,10 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.bajdcc.cmd.remoteconsole.entity.InfoEntity;
+import com.bajdcc.cmd.remoteconsole.event.ApiEvent;
+import com.bajdcc.cmd.remoteconsole.service.ApiService;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -24,13 +24,45 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import cz.msebera.android.httpclient.Header;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
     private Drawer result;
     private TextView txtStatus;
     private String host;
+
+    private static String getIP() throws SocketException {
+        for (Enumeration<NetworkInterface> en = NetworkInterface
+                .getNetworkInterfaces(); en.hasMoreElements(); ) {
+            NetworkInterface intf = en.nextElement();
+            if (intf.getName().toLowerCase().equals("eth0") || intf.getName().toLowerCase().equals("wlan0")) {
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        String ipaddress = inetAddress.getHostAddress();
+                        if (!ipaddress.contains("::")) {
+                            return ipaddress;
+                        }
+                    }
+                }
+            }
+        }
+        return "unknown";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         System.exit(0);
                         break;
                     case R.id.menu_test:
-                        testServer();
+                        EventBus.getDefault().post(new ApiEvent("http://" + host));
                         break;
                     case R.id.menu_update:
                         startActivity(new Intent(Intent.ACTION_VIEW,
@@ -108,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                                     intent = new Intent(MainActivity.this, SettingsActivity.class);
                                     break;
                                 case 1003:
-                                    Toast.makeText(getApplicationContext(), getString(R.string.about), Toast.LENGTH_LONG).show();
+                                    intent = new Intent(MainActivity.this, AboutActivity.class);
                                     break;
                                 case 2001:
                                     intent = new Intent(MainActivity.this, OldConsoleActivity.class);
@@ -135,39 +167,53 @@ public class MainActivity extends AppCompatActivity {
         txtStatus = (TextView) findViewById(R.id.txtLabel);
     }
 
-    private void testServer() {
-        String address = String.format("http://%s/cmd/update.php", host);
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
 
-        Log.d(this.getLocalClassName(), address);
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe
+    public void testServer(ApiEvent event) {
+
+        final String ENDPOINT = event.getHost();
+
+        Log.d(this.getLocalClassName(), ENDPOINT);
         try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setMaxRetriesAndTimeout(2, 1000);
-            client.get(address, new AsyncHttpResponseHandler() {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .build();
+            ApiService apiService = retrofit.create(ApiService.class);
+            apiService.getInfo(getIP())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<InfoEntity>() {
+                        private InfoEntity entity;
 
-                @Override
-                public void onStart() {
-                    txtStatus.setText(String.format(getString(R.string.text_test_start), host));
-                }
+                        @Override
+                        public void onCompleted() {
+                            txtStatus.setText(entity.toString());
+                        }
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                    txtStatus.setText(new String(response));
-                }
+                        @Override
+                        public void onError(Throwable e) {
+                            txtStatus.setText(e.getMessage());
+                            Log.e(MainActivity.this.getLocalClassName(), e.getMessage());
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                    if (errorResponse != null) {
-                        txtStatus.setText(new String(errorResponse));
-                    } else {
-                        txtStatus.setText(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onRetry(int retryNo) {
-                    txtStatus.setText(String.format(getString(R.string.text_test_retry), retryNo));
-                }
-            });
+                        @Override
+                        public void onNext(InfoEntity infoResponse) {
+                            entity = infoResponse;
+                        }
+                    });
         } catch (Exception e) {
             Log.e(MainActivity.this.getLocalClassName(), e.getMessage());
         }

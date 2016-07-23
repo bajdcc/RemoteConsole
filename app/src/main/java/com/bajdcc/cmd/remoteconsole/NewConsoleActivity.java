@@ -7,7 +7,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,15 +17,22 @@ import com.loopj.android.http.RequestParams;
 
 import java.net.URLEncoder;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cz.msebera.android.httpclient.Header;
 
 public class NewConsoleActivity extends AppCompatActivity {
 
     private String prefix = null;
-    private EditText edtMsg = null;
-    private EditText edtUser = null;
-    private EditText edtText = null;
-    private CheckBox checkWarn = null;
+    @BindView(R.id.editMsg)
+    EditText edtMsg = null;
+    @BindView(R.id.editUser)
+    EditText edtUser = null;
+    @BindView(R.id.editMessage)
+    EditText edtText = null;
+    @BindView(R.id.checkWarn)
+    CheckBox checkWarn = null;
 
     final AsyncHttpResponseHandler defaultHandler = new AsyncHttpResponseHandler() {
         @Override
@@ -45,7 +51,7 @@ public class NewConsoleActivity extends AppCompatActivity {
             Message msg = new Message();
             msg.what = 3;
             Bundle data = new Bundle();
-            data.putString("msg", message);
+            data.putString("msg", message == null ? "出现错误" : message);
             msg.setData(data);
             handler.sendMessage(msg);
         }
@@ -94,97 +100,87 @@ public class NewConsoleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_console);
 
+        ButterKnife.bind(this);
+
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         String ip = sp.getString("general_ip", "192.168.1.100");
         String port = sp.getString("general_port", "80");
         prefix = String.format("http://%s:%s/rpc/", ip, port);
+    }
 
-        edtMsg = (EditText) findViewById(R.id.editMsg);
-        edtUser = (EditText) findViewById(R.id.editUser);
-        edtText = (EditText) findViewById(R.id.editMessage);
-        checkWarn = (CheckBox) findViewById(R.id.checkWarn);
+    @OnClick(R.id.btnMsg)
+    void onClickMsg() {
+        if (edtMsg.getText().toString().isEmpty()) return;
+        try {
+            Message msg = new Message();
+            msg.what = 1;
+            Bundle data = new Bundle();
+            data.putString("url", prefix.concat("alert.exe/").concat(URLEncoder.encode(edtMsg.getText().toString(), "UTF-8")));
+            msg.setData(data);
+            handler.sendMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        findViewById(R.id.btnMsg).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle data = new Bundle();
-                    data.putString("url", prefix.concat("alert.exe/").concat(URLEncoder.encode(edtMsg.getText().toString(), "UTF-8")));
-                    msg.setData(data);
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    @OnClick(R.id.btnLock)
+    void onClickLock() {
+        try {
+            Message msg = new Message();
+            msg.what = 1;
+            Bundle data = new Bundle();
+            data.putString("url", prefix.concat("lock.exe"));
+            msg.setData(data);
+            handler.sendMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        findViewById(R.id.btnLock).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle data = new Bundle();
-                    data.putString("url", prefix.concat("lock.exe"));
-                    msg.setData(data);
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    @OnClick(R.id.btnSendPopup)
+    void onClickSP() {
+        try {
+            Message msg = new Message();
+            msg.what = 2;
+            Bundle data = new Bundle();
+            data.putString("url", prefix.concat("danmuku.exe"));
+            data.putString("user", edtUser.getText().toString());
+            data.putString("text", edtText.getText().toString());
+            data.putBoolean("warn", checkWarn.isChecked());
+            msg.setData(data);
+            handler.sendMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        findViewById(R.id.btnSendPopup).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Message msg = new Message();
-                    msg.what = 2;
-                    Bundle data = new Bundle();
-                    data.putString("url", prefix.concat("danmuku.exe"));
-                    data.putString("user", edtUser.getText().toString());
-                    data.putString("text", edtText.getText().toString());
-                    data.putBoolean("warn", checkWarn.isChecked());
-                    msg.setData(data);
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
 
-        findViewById(R.id.btnTogglePopup).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle data = new Bundle();
-                    data.putString("url", prefix.concat("danmuku.full"));
-                    msg.setData(data);
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    @OnClick(R.id.btnTogglePopup)
+    void onClickTP() {
+        try {
+            Message msg = new Message();
+            msg.what = 1;
+            Bundle data = new Bundle();
+            data.putString("url", prefix.concat("danmuku.full"));
+            msg.setData(data);
+            handler.sendMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        findViewById(R.id.btnClosePopup).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Message msg = new Message();
-                    msg.what = 1;
-                    Bundle data = new Bundle();
-                    data.putString("url", prefix.concat("danmuku.shutdown"));
-                    msg.setData(data);
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
+    @OnClick(R.id.btnClosePopup)
+    void onClickCP() {
+        try {
+            Message msg = new Message();
+            msg.what = 1;
+            Bundle data = new Bundle();
+            data.putString("url", prefix.concat("danmuku.shutdown"));
+            msg.setData(data);
+            handler.sendMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

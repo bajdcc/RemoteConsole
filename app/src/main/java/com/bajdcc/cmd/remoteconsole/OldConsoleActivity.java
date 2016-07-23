@@ -18,16 +18,29 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class OldConsoleActivity extends AppCompatActivity {
 
-    private EditText editHost = null;
-    private EditText editPort = null;
-    private Button btnExit = null;
-    private Button btnConn = null;
-    private Button btnInput = null;
-    private TextView txvConn = null;
-    private EditText txvMsg = null;
-    private EditText txvInput = null;
+    @BindView(R.id.edit_IP)
+    EditText editHost = null;
+    @BindView(R.id.edit_PORT)
+    EditText editPort = null;
+    @BindView(R.id.button_exit)
+    Button btnExit = null;
+    @BindView(R.id.button_conn)
+    Button btnConn = null;
+    @BindView(R.id.button_input)
+    Button btnInput = null;
+    @BindView(R.id.textView_status)
+    TextView txvConn = null;
+    @BindView(R.id.editText_msg)
+    EditText txvMsg = null;
+    @BindView(R.id.editText_input)
+    EditText txvInput = null;
 
     private Handler handler = new Handler() {
         @Override
@@ -38,11 +51,14 @@ public class OldConsoleActivity extends AppCompatActivity {
                 case 1:
                     txvConn.setText(data.getString("conn"));
                     txvMsg.setText(data.getString("msg"));
+                    break;
                 case 2:
                     txvConn.setText(data.getString("conn"));
                     txvMsg.setText(data.getString("msg"));
+                    String err = data.getString("err");
+                    Log.d(getLocalClassName(), err);
                     Toast.makeText(getApplicationContext(),
-                            data.getString("err"), Toast.LENGTH_SHORT).show();
+                            err == null ? "出现错误" : err, Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -53,14 +69,7 @@ public class OldConsoleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_old_console);
 
-        editHost = (EditText) findViewById(R.id.edit_IP);
-        editPort = (EditText) findViewById(R.id.edit_PORT);
-        btnExit = (Button) findViewById(R.id.button_exit);
-        btnConn = (Button) findViewById(R.id.button_conn);
-        btnInput = (Button) findViewById(R.id.button_input);
-        txvConn = (TextView) findViewById(R.id.textView_status);
-        txvMsg = (EditText) findViewById(R.id.editText_msg);
-        txvInput = (EditText) findViewById(R.id.editText_input);
+        ButterKnife.bind(this);
 
         btnExit.setOnClickListener(new View.OnClickListener() {
 
@@ -86,134 +95,119 @@ public class OldConsoleActivity extends AppCompatActivity {
                 SendMessage(getString(R.string.static_str_secret_prefix).concat(txvInput.getText().toString()));
             }
         });
+    }
 
-        findViewById(R.id.Button00).setOnClickListener(new View.OnClickListener() {
+    @BindString(R.string.msg_00)
+    String strMsg00;
+    @BindString(R.string.msg_01)
+    String strMsg01;
+    @BindString(R.string.msg_02)
+    String strMsg02;
+    @BindString(R.string.msg_03)
+    String strMsg03;
+    @BindString(R.string.msg_04)
+    String strMsg04;
+    @BindString(R.string.msg_05)
+    String strMsg05;
+    @BindString(R.string.msg_06)
+    String strMsg06;
+    @BindString(R.string.msg_07)
+    String strMsg07;
+    @BindString(R.string.msg_F1)
+    String strMsgf1;
+    @BindString(R.string.msg_F3)
+    String strMsgf3;
+    @BindString(R.string.msg_F6)
+    String strMsgf6;
+    @BindString(R.string.msg_d1)
+    String strMsgd1;
+    @BindString(R.string.msg_d2)
+    String strMsgd2;
+    @BindString(R.string.msg_d3)
+    String strMsgd3;
+    @BindString(R.string.msg_d4)
+    String strMsgd4;
+    @BindString(R.string.msg_ST)
+    String strMsgst;
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_00));
-            }
-        });
+    @OnClick(R.id.Button00)
+    void onClick00() {
+        SendMessage(getString(R.string.msg_00));
+    }
 
-        findViewById(R.id.Button01).setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.Button01)
+    void onClick01() {
+        SendMessage(getString(R.string.msg_01));
+    }
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_01));
-            }
-        });
+    @OnClick(R.id.Button02)
+    void onClick02() {
+        SendMessage(getString(R.string.msg_02));
+    }
 
-        findViewById(R.id.Button02).setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.Button03)
+    void onClick03() {
+        SendMessage(getString(R.string.msg_03));
+    }
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_02));
-            }
-        });
+    @OnClick(R.id.Button04)
+    void onClick04() {
+        SendMessage(getString(R.string.msg_04));
+    }
 
-        findViewById(R.id.Button03).setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.Button05)
+    void onClick05() {
+        SendMessage(getString(R.string.msg_05));
+    }
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_03));
-            }
-        });
+    @OnClick(R.id.Button06)
+    void onClick06() {
+        SendMessage(getString(R.string.msg_06));
+    }
 
-        findViewById(R.id.Button04).setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.Button07)
+    void onClick07() {
+        SendMessage(getString(R.string.msg_07));
+    }
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_04));
-            }
-        });
+    @OnClick(R.id.ButtonF1)
+    void onClickf1() {
+        SendMessage(getString(R.string.msg_F1));
+    }
 
-        findViewById(R.id.Button05).setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.ButtonF3)
+    void onClickf3() {
+        SendMessage(getString(R.string.msg_F3));
+    }
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_05));
-            }
-        });
+    @OnClick(R.id.ButtonF6)
+    void onClickf6() {
+        SendMessage(getString(R.string.msg_F6));
+    }
 
-        findViewById(R.id.Button06).setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.Button_d1)
+    void onClickd1() {
+        SendMessage(getString(R.string.msg_d1));
+    }
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_06));
-            }
-        });
+    @OnClick(R.id.Button_d2)
+    void onClickd2() {
+        SendMessage(getString(R.string.msg_d2));
+    }
 
-        findViewById(R.id.Button07).setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.Button_d3)
+    void onClickd3() {
+        SendMessage(getString(R.string.msg_d3));
+    }
 
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_07));
-            }
-        });
+    @OnClick(R.id.Button_d4)
+    void onClickd4() {
+        SendMessage(getString(R.string.msg_d4));
+    }
 
-        findViewById(R.id.ButtonF1).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_F1));
-            }
-        });
-
-        findViewById(R.id.ButtonF3).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_F3));
-            }
-        });
-
-        findViewById(R.id.ButtonF6).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_F6));
-            }
-        });
-
-        findViewById(R.id.Button_d1).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_d1));
-            }
-        });
-
-        findViewById(R.id.Button_d2).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_d2));
-            }
-        });
-
-        findViewById(R.id.Button_d3).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_d3));
-            }
-        });
-
-        findViewById(R.id.Button_d4).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_d4));
-            }
-        });
-
-        findViewById(R.id.Button_lock).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                SendMessage(getString(R.string.msg_ST));
-            }
-        });
+    @OnClick(R.id.Button_lock)
+    void onClickST() {
+        SendMessage(getString(R.string.msg_ST));
     }
 
     @Override
