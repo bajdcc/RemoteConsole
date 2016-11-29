@@ -145,7 +145,7 @@ public class PushService extends Service {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mqtt_host = sp.getString("general_ip", "192.168.1.100");
-        mqtt_port = sp.getInt("general_mqtt", 1883);
+        mqtt_port = Integer.valueOf(sp.getString("general_mqtt", "1883"));
 
         // Get instances of preferences, connectivity manager and notification manager
         mPrefs = getSharedPreferences(TAG, MODE_PRIVATE);
