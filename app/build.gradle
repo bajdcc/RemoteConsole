@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.3'
 
     defaultConfig {
         applicationId "com.bajdcc.cmd.remoteconsole"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.2"
@@ -29,7 +29,7 @@ dependencies {
         transitive = true
     }
     compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.mikepenz:google-material-typeface:2.2.0.1@aar'
     compile 'com.mikepenz:fontawesome-typeface:4.4.0.1@aar'
     compile 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
@@ -41,7 +41,7 @@ dependencies {
     compile 'com.squareup:javapoet:1.7.0'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
-    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:support-v4:24.2.1'
     compile 'com.baoyz.pg:core:2.1.0'
     apt 'com.google.dagger:dagger-compiler:2.1'
     apt 'com.hannesdorfmann.fragmentargs:processor:3.0.2'

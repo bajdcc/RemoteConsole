@@ -107,4 +107,12 @@
         android:layout_toRightOf="@+id/btnSendPopup"
         android:layout_toEndOf="@+id/btnSendPopup" />
 
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioButton"
+        android:layout_below="@+id/btnSendPopup"
+        android:layout_alignParentStart="true"
+        android:text="@string/drawer_item_console_notify" />
+
 </RelativeLayout>

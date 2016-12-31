@@ -81,7 +81,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".AboutActivity" />
+
+        <service
+            android:name=".service.NotificationMonitorService"
+            android:label="CC安卓消息推送"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -19,6 +19,7 @@
     <string name="drawer_item_console_old_desc">控制锁屏</string>
     <string name="drawer_item_console_new">新版</string>
     <string name="drawer_item_console_new_desc">控制弹幕</string>
+    <string name="drawer_item_console_notify">开启消息推送功能</string>
     <string name="drawer_item_console_mqtt">推送</string>
     <string name="drawer_item_console_mqtt_desc">接收消息</string>
     <string name="title_activity_settings">设置</string>
