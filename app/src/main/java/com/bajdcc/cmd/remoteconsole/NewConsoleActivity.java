@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -31,6 +30,7 @@ import cz.msebera.android.httpclient.Header;
 public class NewConsoleActivity extends AppCompatActivity {
 
     private String prefix = null;
+    private boolean init = false;
     @BindView(R.id.editMsg)
     EditText edtMsg = null;
     @BindView(R.id.editUser)
@@ -39,8 +39,8 @@ public class NewConsoleActivity extends AppCompatActivity {
     EditText edtText = null;
     @BindView(R.id.checkWarn)
     CheckBox checkWarn = null;
-    @BindView(R.id.radioButton)
-    RadioButton radioNotify = null;
+    @BindView(R.id.checkNotify)
+    CheckBox checkNotify = null;
 
     final AsyncHttpResponseHandler defaultHandler = new AsyncHttpResponseHandler() {
         @Override
@@ -115,7 +115,9 @@ public class NewConsoleActivity extends AppCompatActivity {
         String port = sp.getString("general_port", "80");
         prefix = String.format("http://%s:%s/rpc/", ip, port);
 
-        radioNotify.setChecked(isNotificationListenerServiceEnabled());
+        init = false;
+        checkNotify.setChecked(isNotificationListenerServiceEnabled());
+        init = true;
     }
 
     private boolean isNotificationListenerServiceEnabled() {
@@ -135,15 +137,29 @@ public class NewConsoleActivity extends AppCompatActivity {
         return false;
     }
 
-    @OnCheckedChanged(R.id.radioButton)
+    @OnCheckedChanged(R.id.checkNotify)
     void onCheckNotify(boolean checked) {
-        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-        if (checked) {
-            Toast.makeText(getApplicationContext(), "开启消息推送", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "关闭消息推送", Toast.LENGTH_SHORT).show();
+        if (!init)
+            return;
+        startActivityForResult(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"), 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            boolean checked = isNotificationListenerServiceEnabled();
+            if (checkNotify.isChecked() == checked)
+                return;
+            if (checked) {
+                Toast.makeText(getApplicationContext(), "开启消息推送", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "关闭消息推送", Toast.LENGTH_SHORT).show();
+            }
+            init = false;
+            checkNotify.setChecked(checked);
+            init = true;
         }
-        radioNotify.setChecked(isNotificationListenerServiceEnabled());
     }
 
     @OnClick(R.id.btnMsg)
